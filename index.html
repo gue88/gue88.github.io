@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>gue88 | Projects</title>
+
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+
+        <header>
+            <h1>gue88</h1>
+            <p>My GitHub projects</p>
+        </header>
+
+        <main>
+            <h2>Repositories</h2>
+
+            <div id="repositories">
+                Loading repositories...
+            </div>
+        </main>
+
+        <script>
+            const username = "gue88";
+
+            async function loadRepositories() {
+                const container = document.getElementById("repositories");
+
+                try {
+                    const response = await fetch(
+                        `https://api.github.com/users/${username}/repos?per_page=100&sort=updated`
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Failed to load repositories");
+                    }
+
+                    const repositories = await response.json();
+
+                    container.innerHTML = "";
+
+                    repositories.forEach(repo => {
+                        const card = document.createElement("div");
+                        card.className = "repo";
+
+                        card.innerHTML = `
+                        <h3>
+                            <a href="${repo.html_url}" target="_blank">
+                                ${repo.name}
+                            </a>
+                        </h3>
+
+                        <p>
+                            ${repo.description || "No description provided."}
+                        </p>
+
+                        <span>
+                            ${repo.language || "Unknown language"}
+                        </span>
+
+                        <span>
+                            ★ ${repo.stargazers_count}
+                        </span>
+                    `;
+
+                        container.appendChild(card);
+                    });
+
+                } catch (error) {
+                    container.innerHTML =
+                        "<p>Could not load repositories.</p>";
+
+                    console.error(error);
+                }
+            }
+
+            loadRepositories();
+        </script>
+
+    </body>
+
+</html>
